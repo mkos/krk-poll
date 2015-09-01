@@ -1,6 +1,5 @@
 __author__ = 'Michal Kosinski'
 
-
 SAMPLE_RESPONSE = {u'data': {u'charts': [],
            u'dateFormat': u'H:00',
            u'series': [{u'aggType': u'A1h',
@@ -308,3 +307,51 @@ SAMPLE_RESPONSE = {u'data': {u'charts': [],
            u'viewType': u'station'},
  u'success': True}
 
+
+if __name__ == '__main__':
+
+    columns = {
+        'aggType': 0,
+        'avg': {'avg': 1, 'min': 2, 'max': 3},
+        'chartTooltipContent': 4,
+        'count': 5
+    }
+    rows = []
+
+    def magic(row, cols, struct, name):
+        if name not in columns.keys():
+            print "warning: key {} is not defined".format(name)
+        else:
+            if isinstance(cols[name], dict):
+                if not isinstance(struct[name], dict):
+                    print "Warning: key {} is not dict".format(name)
+                else:
+                    for key in cols[name].keys():
+                        magic(row, cols[name], struct[name], key)
+            else:
+                index = cols[name] if name in cols.keys() else -1
+                row[index] = struct[name] if name in struct.keys() else None
+
+
+    for x in SAMPLE_RESPONSE['data']['series']:
+        row = [0 for i in range(10)]
+        for key in x.keys():
+            magic(row, columns, x, key)
+
+        rows.append(row)
+
+    from pprint import pprint
+    pprint(rows)
+
+    from datetime import datetime
+    def magic_data(data):
+        i = 0
+        for sample in data:
+            timestamp, value = sample
+            print "{}: {}, {}".format(i, datetime.fromtimestamp(int(timestamp)), value)
+            i += 1
+
+
+
+    print SAMPLE_RESPONSE['data']['series'][0]['paramLabel']
+    pprint(magic_data(SAMPLE_RESPONSE['data']['series'][0]['data']))
