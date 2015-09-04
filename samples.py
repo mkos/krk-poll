@@ -345,11 +345,10 @@ if __name__ == '__main__':
 
     from datetime import datetime
     def magic_data(data):
-        i = 0
         for sample in data:
             timestamp, value = sample
-            print "{}: {}, {}".format(i, datetime.fromtimestamp(int(timestamp)), value)
-            i += 1
+            print "{}, {}".format(timestamp, value)
+
 
 
 
